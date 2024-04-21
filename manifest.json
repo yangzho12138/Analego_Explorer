@@ -35,6 +35,8 @@
   "permissions": [
     "activeTab",
     "https://timan.cs.illinois.edu/*",
-    "clipboardWrite"
+    "clipboardWrite",
+    "storage",
+    "tabs"
   ]
 }

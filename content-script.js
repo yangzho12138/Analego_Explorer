@@ -124,6 +124,10 @@ let panel = new Panel()
 
 
 window.onmouseup = function (e) {
+    console.log(selectState)
+    if (selectState === 'off') 
+        return
+    
     let raw = window.getSelection().toString().trim()
 
     let x = e.pageX
@@ -139,3 +143,19 @@ window.onmouseup = function (e) {
         panel.show()
     }
 }
+
+
+let selectState = 'off'
+
+chrome.storage.sync.get(['switch'], function (result) {
+    if (result.switch) {
+        selectState = result.switch
+    }
+});
+
+chrome.runtime.onMessage.addListener(
+    function (request) {
+        if (request.switch) {
+            selectState = request.switch
+        }
+});
