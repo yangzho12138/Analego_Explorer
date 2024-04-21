@@ -58,30 +58,59 @@ Panel.prototype.search = function(raw){
     this.source.innerText = raw
     this.dest.innerText = '...'
 
-    // api call
-    data = [
-        {
-            title: 'title1',
-            content: 'content1'
-        },
-        {
-            title: 'title2',
-            content: 'content2'
+    // const apiUrl = 'https://timan.cs.illinois.edu/analegosearch/api/search';
+
+    // // api call
+    // fetch(apiUrl, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //         "query": raw
+    //     })
+    // }).then(res => res.json()).then(res => {
+    //     data = res.docs;
+    //     console.log(data)
+    //     cards = document.createElement('div')
+    //     data.forEach(element => {
+    //         card = document.createElement('div')
+    //         card.innerHTML = `
+    //             <div class="title"> ${element.title} </div>
+    //             <div class="content"> ${element.content} </div>
+    //             <hr/>
+    //         `
+    //         cards.appendChild(card)
+    //     });
+
+    //     this.dest.innerHTML = cards.innerHTML
+    // })
+
+    chrome.runtime.sendMessage({
+        action: "search",
+        apiUrl: 'https://timan.cs.illinois.edu/analegosearch/api/search',
+        query: raw
+    }, response => {
+        if (response.success) {
+            const data = response.data.docs;
+            console.log(data);
+            const cards = document.createElement('div');
+            data.forEach(element => {
+                const card = document.createElement('div');
+                card.innerHTML = `
+                    <div class="title"> Target: ${element.target} </div>
+                    <div class="title"> Prompt: ${element.prompt} </div>
+                    <div class="content"> ${element.analogy} </div>
+                    <hr/>
+                `;
+                cards.appendChild(card);
+            });
+            this.dest.innerHTML = cards.innerHTML;
+        } else {
+            console.error('Error:', response.error);
+            this.dest.innerText = 'Error loading data.';
         }
-    ]
-
-    cards = document.createElement('div')
-    data.forEach(element => {
-        card = document.createElement('div')
-        card.innerHTML = `
-            <div class="title"> ${element.title} </div>
-            <div class="content"> ${element.content} </div>
-            <hr/>
-        `
-        cards.appendChild(card)
-    });
-
-    this.dest.innerHTML = cards.innerHTML
+    });    
 }
 
 

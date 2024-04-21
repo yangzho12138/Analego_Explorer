@@ -1,5 +1,6 @@
 .search-panel {
-    width: 280px;
+    max-width: 40vw;
+    overflow: scroll;
     box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, .2);
     border-radius: 8px;
     transform: scale(0.6);
@@ -44,13 +45,13 @@
     padding-bottom: 10px;
 }
 
-.search-panel .title,
+/* .search-panel .title,
 .search-panel .content {
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-}
+} */
 
 .search-panel .title {
     font-size: 12px;
@@ -62,5 +63,6 @@
     color: #666;
     font-size: 13px;
     margin-top: 6px;
-    overflow: hidden;
+    max-height: 40vh;
+    overflow-y: scroll;
 }
