@@ -130,6 +130,11 @@ window.onmouseup = function (e) {
     
     let raw = window.getSelection().toString().trim()
 
+    if(contentAwareState === 'on'){
+        // advanced content aware function
+        console.log('content aware')
+    }
+
     let x = e.pageX
     let y = e.pageY
 
@@ -157,5 +162,20 @@ chrome.runtime.onMessage.addListener(
     function (request) {
         if (request.switch) {
             selectState = request.switch
+        }
+});
+
+let contentAwareState = 'off'
+
+chrome.storage.sync.get(['contentAware'], function (result) {
+    if (result.contentAware) {
+        contentAwareState = result.contentAware
+    }
+});
+
+chrome.runtime.onMessage.addListener(
+    function (request) {
+        if (request.contentAware) {
+            contentAwareState = request.contentAware
         }
 });
