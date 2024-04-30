@@ -7,7 +7,7 @@ Panel.prototype.create = function () {
     let container = document.createElement('div')
 
     let html = `
-        <header>Analego Search<span class="close">X</span></header>
+        <header>Analego Search<span class="pin"></span><span class="close">X</span></header>
         <main>
             <div class="source">
                 <div class="title">Search Key Words</div>
@@ -30,6 +30,8 @@ Panel.prototype.create = function () {
     document.body.appendChild(container)
     
     this.container = container
+
+    this.pin = container.querySelector('.pin');
     
     this.close = container.querySelector('.close')
     
@@ -52,6 +54,74 @@ Panel.prototype.bind = function () {
     this.close.onclick = () => {
         this.hide()
     }
+
+    let isPinned = false; // 面板是否被“固定”
+    let isDragging = false; // 面板是否正在拖动
+    let start = { x: 0, y: 0 }; // 拖动开始时的鼠标位置
+    let offset = { x: 0, y: 0 }; // 面板初始偏移位置
+
+    const onDrag = (e) => {
+        if (isDragging) {
+            this.container.style.left = (e.clientX - start.x + offset.x) + 'px';
+            this.container.style.top = (e.clientY - start.y + offset.y) + 'px';
+        }
+    };
+
+    this.pin.addEventListener('click', () => {
+        isPinned = !isPinned;
+        this.pin.classList.toggle('pinned', isPinned);
+        if (isPinned) {
+            document.removeEventListener('mousemove', onDrag);
+        }
+    });
+
+    this.container.querySelector('header').addEventListener('mousedown', (e) => {
+        if (!isPinned) {
+            isDragging = true;
+            start = { x: e.clientX, y: e.clientY };
+            offset = { x: this.container.offsetLeft, y: this.container.offsetTop };
+            document.addEventListener('mousemove', onDrag);
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+        }
+    });
+
+    // let isPinned = false; // 面板是否被“固定”
+    // let dragOffset = {};
+    // const header = this.container.querySelector('header');
+
+    // this.pin.addEventListener('click', () => {
+    //     isPinned = !isPinned;
+    //     this.pin.classList.toggle('pinned', isPinned);
+    // });
+
+    // header.addEventListener('mousedown', (e) => {
+    //     if (!isPinned) {
+    //         dragOffset.x = e.clientX - this.container.offsetLeft;
+    //         dragOffset.y = e.clientY - this.container.offsetTop;
+    //         header.classList.add('dragging');
+    //     }
+    // });
+
+    // document.addEventListener('mousemove', (e) => {
+    //     if (header.classList.contains('dragging')) {
+    //         this.container.style.left = (e.clientX - dragOffset.x) + 'px';
+    //         this.container.style.top = (e.clientY - dragOffset.y) + 'px';
+    //     }
+    // });
+
+    // document.addEventListener('mouseup', () => {
+    //     header.classList.remove('dragging');
+    // });
+
+    // this.close.onclick = () => {
+    //     this.hide();
+    // };
 }
 
 Panel.prototype.search = function(raw){
