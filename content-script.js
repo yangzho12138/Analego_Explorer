@@ -114,11 +114,40 @@ Panel.prototype.search = function(raw){
 }
 
 
+
 Panel.prototype.pos = function (pos) {
-    this.container.style.top = pos.y + 'px'
-    this.container.style.left = pos.x + 'px'
+    this.container.style.position = 'fixed'
+    this.container.style.bottom = '0%'
+    this.container.style.right = '0%'
+
+     // Initialize variables for drag functionality
+    this.dragging = false;
+    this.offsetX = 0;
+    this.offsetY = 0;
+
+    // Add event listeners for drag functionality
+    this.container.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    this.container.addEventListener('mouseup', this.handleMouseUp.bind(this));
 }
 
+Panel.prototype.handleMouseDown = function (event) {
+    this.dragging = true;
+    this.offsetX = event.clientX - parseInt(this.container.style.right);
+    this.offsetY = event.clientY - parseInt(this.container.style.bottom);
+}
+
+Panel.prototype.handleMouseUp = function () {
+    this.dragging = false;
+}
+
+document.addEventListener('mousemove', function (event) {
+    if (panel.dragging) {
+        var newX = event.clientX - panel.offsetX;
+        var newY = event.clientY - panel.offsetY;
+        panel.container.style.left = `${Math.max(0, newX)}px`;
+        panel.container.style.top = `${Math.max(0, newY)}px`;
+    }
+});
 
 let panel = new Panel()
 
@@ -129,11 +158,6 @@ window.onmouseup = function (e) {
         return
     
     let raw = window.getSelection().toString().trim()
-
-    if(contentAwareState === 'on'){
-        // advanced content aware function
-        console.log('content aware')
-    }
 
     let x = e.pageX
     let y = e.pageY
@@ -162,20 +186,5 @@ chrome.runtime.onMessage.addListener(
     function (request) {
         if (request.switch) {
             selectState = request.switch
-        }
-});
-
-let contentAwareState = 'off'
-
-chrome.storage.sync.get(['contentAware'], function (result) {
-    if (result.contentAware) {
-        contentAwareState = result.contentAware
-    }
-});
-
-chrome.runtime.onMessage.addListener(
-    function (request) {
-        if (request.contentAware) {
-            contentAwareState = request.contentAware
         }
 });
