@@ -6,8 +6,13 @@ function Panel() {
 Panel.prototype.create = function () {
     let container = document.createElement('div')
 
+    // <header>Analego Search<span class="pin"></span><span class="close">X</span></header>
     let html = `
-        <header>Analego Search<span class="pin"></span><span class="close">X</span></header>
+        <div class="custom-header">
+            <button class="pin"><img src="https://github.com/yangzho12138/Analego_Explorer/blob/Abby/images/pin.png"></button>
+            <header>Analego Search</header>
+            <button class="close">X</button>
+        </div>
         <main>
             <div class="source">
                 <div class="title">Search Key Words</div>
@@ -75,7 +80,7 @@ Panel.prototype.bind = function () {
         }
     });
 
-    this.container.querySelector('header').addEventListener('mousedown', (e) => {
+    this.container.querySelector('div').addEventListener('mousedown', (e) => {
         if (!isPinned) {
             isDragging = true;
             start = { x: e.clientX, y: e.clientY };
