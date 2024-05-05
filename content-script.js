@@ -55,10 +55,10 @@ Panel.prototype.bind = function () {
         this.hide()
     }
 
-    let isPinned = false; // 面板是否被“固定”
-    let isDragging = false; // 面板是否正在拖动
-    let start = { x: 0, y: 0 }; // 拖动开始时的鼠标位置
-    let offset = { x: 0, y: 0 }; // 面板初始偏移位置
+    let isPinned = false; 
+    let isDragging = false; 
+    let start = { x: 0, y: 0 }; 
+    let offset = { x: 0, y: 0 }; 
 
     const onDrag = (e) => {
         if (isDragging) {
@@ -91,7 +91,7 @@ Panel.prototype.bind = function () {
         }
     });
 
-    // let isPinned = false; // 面板是否被“固定”
+    // let isPinned = false; 
     // let dragOffset = {};
     // const header = this.container.querySelector('header');
 
@@ -123,6 +123,12 @@ Panel.prototype.bind = function () {
     //     this.hide();
     // };
 }
+
+//content_aware
+Panel.prototype.updateDisplay = function() {
+    this.show();  
+};
+
 
 Panel.prototype.search = function(raw){
     this.source.innerText = raw
@@ -156,6 +162,8 @@ Panel.prototype.search = function(raw){
     //     this.dest.innerHTML = cards.innerHTML
     // })
 
+
+
     chrome.runtime.sendMessage({
         action: "search",
         apiUrl: 'https://timan.cs.illinois.edu/analegosearch/api/search',
@@ -181,13 +189,94 @@ Panel.prototype.search = function(raw){
             this.dest.innerText = 'Error loading data.';
         }
     });    
+
+    //content_aware
+    let context = this.extractContext();
+    let topic = this.extractTopic(context); 
+
+    
+    if (contentAwareState === 'on') {
+        this.addContentAwareSection(context, topic);
+    }
+
+    this.updateDisplay();  
 }
+
+Panel.prototype.addContentAwareSection = function(context, topic) {
+    let contentAwareSection = this.container.querySelector('.content-aware-section');
+    if (!contentAwareSection) {
+        contentAwareSection = document.createElement('div');
+        contentAwareSection.classList.add('content-aware-section');
+        contentAwareSection.innerHTML = `
+            <div class="title">Context</div>
+            <div class="content context-content"></div>
+            <div class="title">Topic</div>
+            <div class="content topic-content"></div>
+        `;
+        this.container.querySelector('main').appendChild(contentAwareSection);
+    }
+
+
+    contentAwareSection.querySelector('.context-content').textContent = context;
+    contentAwareSection.querySelector('.topic-content').textContent = topic;
+};
+
+const stopwords = [
+    'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 
+    'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 
+    'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 
+    'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 
+    'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 
+    'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 
+    'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 
+    'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 
+    'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 
+    'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 
+    'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 
+    'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 
+    'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now'
+];
+
+
+Panel.prototype.extractTopic = function(text) {
+    const words = text.toLowerCase().match(/\w+/g) || [];
+    const freqMap = {};
+    words.forEach(word => {
+        if (!stopwords.includes(word)) {  
+            freqMap[word] = (freqMap[word] || 0) + 1;
+        }
+    });
+    const sortedWords = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
+    return sortedWords.length > 0 ? sortedWords[0][0] : "No significant words found";
+};
+
+
 
 
 Panel.prototype.pos = function (pos) {
     this.container.style.top = pos.y + 'px'
     this.container.style.left = pos.x + 'px'
 }
+
+
+// content_aware
+Panel.prototype.extractContext = function() {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return "";
+
+    let container = selection.getRangeAt(0).commonAncestorContainer;
+    // Ensure we have an element, not a text node
+    while (container.nodeType !== 1) {
+        container = container.parentNode;
+    }
+
+    // Assuming paragraphs are contained in <p> tags
+    if (container.tagName.toLowerCase() !== 'p') {
+        container = container.closest('p');
+    }
+
+    return container ? container.textContent : "";
+};
 
 
 let panel = new Panel()

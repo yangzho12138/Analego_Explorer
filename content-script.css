@@ -27,7 +27,7 @@
 }
 
 .search-panel header.dragging {
-    cursor: grabbing; /* 拖动状态时的光标样式 */
+    cursor: grabbing; 
 }
 
 .search-panel header .close {
@@ -73,9 +73,8 @@
 }
 
 .search-panel header .pin {
-    /* 添加固定按钮样式，调整为你喜欢的样式 */
     position: absolute;
-    left: 10px; /* 或根据实际需要调整 */
+    left: 10px; 
     top: 50%;
     transform: translateY(-50%);
     width: 20px;
@@ -88,6 +87,5 @@
 }
 
 .search-panel header .pin.pinned {
-    /* 固定状态时的样式变化 */
     background-color: #666;
 }
