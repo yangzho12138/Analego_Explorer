@@ -39,9 +39,7 @@
 }
 
 
-
 .search-panel .custom-header .close {
-    /* background: none; */
     border: none;
     cursor: pointer;
     font-size: 12px;
@@ -55,8 +53,6 @@
     font-size: inherit;
     color: inherit;
 }
-
-
 
 
 
@@ -96,15 +92,23 @@
 .search-panel .title {
     font-size: 12px;
     color: #888;
-    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
 }
 
 .search-panel .content {
     color: #666;
     font-size: 13px;
-    margin-top: 6px;
     max-height: 40vh;
     overflow-y: scroll;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
 }
 
 .search-panel header .pin {

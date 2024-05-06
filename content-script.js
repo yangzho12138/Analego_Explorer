@@ -9,20 +9,28 @@ Panel.prototype.create = function () {
     // <header>Analego Search<span class="pin"></span><span class="close">X</span></header>
     let html = `
         <div class="custom-header">
-            <button class="pin"><img src="https://github.com/yangzho12138/Analego_Explorer/blob/Abby/images/pin.png"></button>
+            <button class="pin"><img src="images/pin.png"></button>
             <header>Analego Search</header>
             <button class="close">X</button>
         </div>
         <main>
             <div class="source">
-                <div class="title">Search Key Words</div>
+                <div class="title">
+                    <p>Search Key Words</p>
+                    <button class="copy-btn">Copy</button>
+                </div>
                 <!-- dynamic insert -->
                 <div class="content"></div>
             </div>
             <div class="dest">
-                <div class="title">Analogies</div>
+                <div class="title">
+                    <p>Analogies</p>
+                    <button class="copy-btn">Copy</button>
+                </div>
                 <!--api call, async -->
-                <div class="content">...</div>
+                <div class="content">
+                    ...   
+                </div>
             </div>
         </main>
     `
@@ -43,6 +51,9 @@ Panel.prototype.create = function () {
     this.source = container.querySelector('.source .content')
     
     this.dest = container.querySelector('.dest .content')
+
+
+    
 }
 
 
@@ -80,7 +91,7 @@ Panel.prototype.bind = function () {
         }
     });
 
-    this.container.querySelector('div').addEventListener('mousedown', (e) => {
+    this.container.querySelector('.custom-header').addEventListener('mousedown', (e) => {
         if (!isPinned) {
             isDragging = true;
             start = { x: e.clientX, y: e.clientY };
@@ -89,12 +100,16 @@ Panel.prototype.bind = function () {
         }
     });
 
-    document.addEventListener('mouseup', () => {
+    // ZL: changed this to container instead of document.
+    this.container.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
             document.removeEventListener('mousemove', onDrag);
         }
     });
+
+    
+
 
     // let isPinned = false; 
     // let dragOffset = {};
@@ -195,6 +210,8 @@ Panel.prototype.search = function(raw){
         }
     });    
 
+
+
     //content_aware
     let context = this.extractContext();
     let topic = this.extractTopic(context); 
@@ -213,7 +230,10 @@ Panel.prototype.addContentAwareSection = function(context, topic) {
         contentAwareSection = document.createElement('div');
         contentAwareSection.classList.add('content-aware-section');
         contentAwareSection.innerHTML = `
-            <div class="title">Context</div>
+            <div class="title">
+                <p>Context</p>
+                <button class="copy-btn">Copy</button>
+            </div>
             <div class="content context-content"></div>
             <div class="title">Topic</div>
             <div class="content topic-content"></div>
@@ -224,7 +244,24 @@ Panel.prototype.addContentAwareSection = function(context, topic) {
 
     contentAwareSection.querySelector('.context-content').textContent = context;
     contentAwareSection.querySelector('.topic-content').textContent = topic;
+
+
+    // copy function for content
+    var copyBtn = contentAwareSection.querySelector('.copy-btn');
+
+    copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(context)
+    });
+
 };
+
+
+
+
+
+
+
+
 
 const stopwords = [
     'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 
