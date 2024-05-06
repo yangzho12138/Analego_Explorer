@@ -9,7 +9,7 @@ Panel.prototype.create = function () {
     // <header>Analego Search<span class="pin"></span><span class="close">X</span></header>
     let html = `
         <div class="custom-header">
-            <button class="pin"><img src="images/pin.png"></button>
+            <button class="pin">Pin</button>
             <header>Analego Search</header>
             <button class="close">X</button>
         </div>
@@ -210,7 +210,7 @@ Panel.prototype.search = function(raw){
         }
     });    
 
-
+    
 
     //content_aware
     let context = this.extractContext();
