@@ -238,7 +238,7 @@ Panel.prototype.addContentAwareSection = function(context, topic) {
             <div class="title">Topic</div>
             <div class="content topic-content"></div>
         `;
-        this.container.querySelector('main').appendChild(contentAwareSection);
+        this.container.querySelector('.source').appendChild(contentAwareSection);
     }
 
 
