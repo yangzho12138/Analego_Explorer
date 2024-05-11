@@ -186,13 +186,15 @@ Panel.prototype.search = function(raw){
 
     chrome.runtime.sendMessage({
         action: "search",
-        apiUrl: 'https://timan.cs.illinois.edu/analegosearch/api/search',
+        // apiUrl: 'https://timan.cs.illinois.edu/analegosearch/api/search',
+        apiUrl: 'http://localhost:8001/api/search',
         query: raw
     }, response => {
         if (response.success) {
             const data = response.data.docs;
             console.log(data);
             const cards = document.createElement('div');
+            cards.style.width = '100%';
             data.forEach(element => {
                 const card = document.createElement('div');
                 card.innerHTML = `

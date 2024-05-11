@@ -82,13 +82,13 @@
     padding-bottom: 10px;
 }
 
-/* .search-panel .title,
+.search-panel .title,
 .search-panel .content {
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-} */
+}
 
 .search-panel .title {
     font-size: 12px;
@@ -106,6 +106,7 @@
     max-height: 40vh;
     overflow-y: scroll;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 10px;
